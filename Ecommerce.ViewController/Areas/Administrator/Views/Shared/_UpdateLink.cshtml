@@ -1,0 +1,9 @@
+﻿@model Ecommerce.Common.Struct.CRUD
+@{
+    if (Model.CanUpdate)
+    {
+        string link = "/Administrator/" + Model.Controller + "/Update/" + ViewData["id"].ToString();
+        <a href="@link">Sửa |</a>
+    }
+}
+

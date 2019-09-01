@@ -1,0 +1,98 @@
+﻿@{
+    ViewBag.Title = "Nhóm sản phẩm";
+    Ecommerce.Common.Struct.CRUD crud = ViewBag.CRUD;
+}
+
+<h2>Nhóm sản phẩm</h2>
+<div ng-app="myNgApp" ng-controller="myController">
+    <table class="table">
+        <tr>
+            <th>ID</th>
+            <th>Mã</th>
+            <th>Tên</th>
+            <th>Nhóm cha</th>
+            <th>
+                @Html.Partial("_CreateLink", crud)
+            </th>
+        </tr>
+        <tr ng-repeat="s in pager.Items">
+            <td>{{s.NhomSanPhamID}}</td>
+            <td>{{s.MaNhomSanPham}}</td>
+            <td>{{s.TenNhomSanPham}}</td>
+            <td>{{s.TenNhomSanPhamCha}}</td>
+            <td>
+                @Html.Partial("_UpdateLink", crud, new ViewDataDictionary() { { "id", "{{s.NhomSanPhamID}}" } })
+                @Html.Partial("_DeleteLink", crud, new ViewDataDictionary() { { "id", "{{s.NhomSanPhamID}}" } })
+                <a href="#" data-toggle="modal" data-target="#myModal"
+                   ng-click="viewThuocTinh(s.NhomSanPhamID, s.TenNhomSanPham)">
+                    Thuộc tính
+                </a>
+            </td>
+        </tr>
+    </table>
+    <ul class="pagination">        
+        <li ng-if="pager.CurrentPage > 1">
+            <a href="#" ng-click="display(1)">First</a>
+        </li>
+        <li ng-if="pager.CurrentPage > 1">
+            <a href="#" ng-click="display(pager.CurrentPage - 1)">Previous</a>
+        </li>
+        <li ng-repeat="i in pager.DisplayPages" 
+            ng-class="{active: i == pager.CurrentPage}">
+            <a href="#" ng-click="display(i)">{{i}}</a>
+        </li>
+        <li ng-if="pager.CurrentPage < pager.TotalPages">
+            <a href="#" ng-click="display(pager.CurrentPage + 1)">Next</a>
+        </li>
+        <li ng-if="pager.CurrentPage < pager.TotalPages">
+            <a href="#" ng-click="display(pager.TotalPages)">Last</a>
+        </li>
+    </ul>
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{tenNhomSanPham | uppercase}}</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <tr>
+                            <th>Mã thuộc tính</th>
+                            <th>Tên thuộc tính</th>
+                            <th>Đơn vị tính</th>
+                            <th></th>
+                        </tr>
+                        <tr ng-repeat="s in listThuocTinh">
+                            <td>{{s.MaThuocTinh}}</td>
+                            <td>{{s.TenThuocTinh}}</td>
+                            <td>{{s.DonViTinh}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        var ngApp = angular.module('myNgApp', []);
+        ngApp.controller('myController', function ($scope, $http, $window) {
+            $scope.display = function (pageIndex) {
+                $http.get("/Administrator/NhomSanPham/Display?pageIndex=" + pageIndex).then(function (r) {
+                    $scope.pager = r.data;
+                });
+            }
+            $scope.display(1);
+
+            $scope.viewThuocTinh = function (id, ten) {
+                $scope.tenNhomSanPham = ten;
+                $http.get("/Administrator/NhomSanPham/ViewThuocTinh/" + id).then(function (r) {
+                    $scope.listThuocTinh = r.data;
+                });
+            }
+        });
+    </script>
+}

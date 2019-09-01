@@ -1,0 +1,10 @@
+﻿@model Ecommerce.Common.Struct.CRUD
+@{
+    if (Model.CanDelete)
+    {
+        string link = "/Administrator/" + Model.Controller + "/Delete/" + ViewData["id"].ToString();
+        <a href="@link">Xóa |</a>
+    }
+}
+
+

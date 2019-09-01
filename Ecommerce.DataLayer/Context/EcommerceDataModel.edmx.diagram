@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="4c8e9bd7e561461fb79259d18f7e1d46" Name="Diagram1">
+        <EntityTypeShape EntityType="EcommerceModel.KhachHang" Width="1.5" PointX="0.75" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="EcommerceModel.NhomSanPham" Width="1.5" PointX="0.75" PointY="10.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="EcommerceModel.SanPham" Width="1.5" PointX="3" PointY="9.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EcommerceModel.ThuocTinh" Width="1.5" PointX="3" PointY="14.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="EcommerceModel.HinhThucThanhToan" Width="1.5" PointX="0.75" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EcommerceModel.TinhTrangDonHang" Width="1.5" PointX="0.75" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="EcommerceModel.DonHang" Width="1.5" PointX="3" PointY="3" IsExpanded="true" />
+        <EntityTypeShape EntityType="EcommerceModel.DonHangCT" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EcommerceModel.GioHang" Width="1.5" PointX="6" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EcommerceModel.ChucNang" Width="1.5" PointX="8.75" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="EcommerceModel.NhanVien" Width="1.5" PointX="8" PointY="9.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="EcommerceModel.NhomNguoiDung" Width="1.5" PointX="5.75" PointY="9.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="EcommerceModel.PhanQuyen" Width="1.5" PointX="11" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EcommerceModel.TaiKhoan" Width="1.5" PointX="10.25" PointY="9.375" IsExpanded="true" />
+        <AssociationConnector Association="EcommerceModel.FK_DonHang_KhachHangID" ManuallyRouted="false" />
+        <AssociationConnector Association="EcommerceModel.FK_GioHang_KhachHangID" ManuallyRouted="false" />
+        <AssociationConnector Association="EcommerceModel.FK_NhomSanPham_NhomSanPhamID" ManuallyRouted="false" />
+        <AssociationConnector Association="EcommerceModel.FK_NhomSanPham_ThuocTinh_NhomSanPhamID" ManuallyRouted="false" />
+        <AssociationConnector Association="EcommerceModel.FK_SanPham_NhomSanPhamID" ManuallyRouted="false" />
+        <AssociationConnector Association="EcommerceModel.FK_DonHangCT_SanPhamID" ManuallyRouted="false" />
+        <AssociationConnector Association="EcommerceModel.FK_GioHang_SanPhamID" ManuallyRouted="false" />
+        <AssociationConnector Association="EcommerceModel.FK_DonHang_HinhThucThanhToan" ManuallyRouted="false" />
+        <AssociationConnector Association="EcommerceModel.FK_DonHang_TinhTrangDonHang" ManuallyRouted="false" />
+        <AssociationConnector Association="EcommerceModel.FK_DonhangCT_DonHangID" ManuallyRouted="false" />
+        <AssociationConnector Association="EcommerceModel.FK_PhanQuyen_ChucNangID" ManuallyRouted="false" />
+        <AssociationConnector Association="EcommerceModel.FK_NhanVien_NhomNguoiDungID" ManuallyRouted="false" />
+        <AssociationConnector Association="EcommerceModel.FK_TaiKhoan_NhanVienID" ManuallyRouted="false" />
+        <AssociationConnector Association="EcommerceModel.FK_PhanQuyen_NhomNguoiDungID" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

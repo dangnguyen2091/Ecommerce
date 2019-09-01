@@ -1,0 +1,143 @@
+﻿@{
+    ViewBag.Title = "Sửa nhóm sản phẩm";
+}
+
+<form name="Form" ng-app="myNgApp" ng-controller="myController">
+    <div class="form-horizontal">
+        <div class="row" style="text-align:center;">
+            <h2 class="col-md-12">NHÓM SẢN PHẨM</h2>
+        </div>
+        <hr />
+        <div class="form-group">
+            <div class="col-md-4">
+                Mã nhóm sản phẩm (*)
+                <input id="txtMaNhomSanPham" class="form-control input-sm" type="text" name="MaNhomSanPham"
+                       ng-model="nhomSanPham.MaNhomSanPham" />
+            </div>
+            <div class="col-md-4">
+                Tên nhóm sản phẩm (*)
+                <input class="form-control input-sm" type="text" name="TenNhomSanPham"
+                       ng-model="nhomSanPham.TenNhomSanPham" />
+            </div>
+            <div class="col-md-4">
+                Nhóm cha
+                <select class="form-control input-sm" name="NhomSanPhamChaID"
+                        ng-model="nhomSanPham.NhomSanPhamChaID"
+                        ng-options="s.NhomSanPhamID as s.TenNhomSanPham for s in nhomSanPham.NhomSanPhamChaCollection">
+                </select>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>Danh sách thuộc tính</strong></div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        Mã thuộc tính (*)
+                        <input id="txtMaThuocTinh" class="form-control input-sm" type="text" name="MaThuocTinh"
+                               ng-model="nhomSanPham.ThuocTinh.MaThuocTinh" />
+                    </div>
+                    <div class="col-md-4">
+                        Tên thuộc tính (*)
+                        <input class="form-control input-sm" type="text" name="TenThuocTinh"
+                               ng-model="nhomSanPham.ThuocTinh.TenThuocTinh" />
+                    </div>
+                    <div class="col-md-4">
+                        Đơn vị tính
+                        <input class="form-control input-sm" type="text" name="DonViTinh"
+                               ng-model="nhomSanPham.ThuocTinh.DonViTinh" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12" style="text-align:right">
+                        <input class="btn btn-default" type="button" value="Thêm"
+                               ng-click="addThuocTinh(nhomSanPham.ThuocTinh)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <table class="table">
+                            <tr>
+                                <th>Mã thuộc tính</th>
+                                <th>Tên thuộc tính</th>
+                                <th>Đơn vị tính</th>
+                                <th></th>
+                            </tr>
+                            <tr ng-repeat="s in nhomSanPham.ThuocTinhs">
+                                <td>{{s.MaThuocTinh}}</td>
+                                <td>{{s.TenThuocTinh}}</td>
+                                <td>{{s.DonViTinh}}</td>
+                                <td ng-click="removeThuocTinh(s.MaThuocTinh)"><a href="#">bỏ</a></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-2">
+                <input class="btn btn-primary" type="button" value="Lưu"
+                       style="width:70px;"
+                       ng-click="edit(nhomSanPham)" />
+                <br /><br />
+                <a href="/Administrator/NhomSanPham/Index">Trở lại danh sách</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section scripts{
+    <script>
+        var ngApp = angular.module('myNgApp', []);
+        ngApp.controller('myController', function ($scope, $http, $window) {
+            var model = '@Html.Raw(Json.Encode(Model))';
+            $scope.nhomSanPham = JSON.parse(model);
+            $("#txtMaNhomSanPham").focus();
+
+            $scope.addThuocTinh = function (thuocTinh) {
+                var error = "";
+                if (thuocTinh.MaThuocTinh == null || thuocTinh.MaThuocTinh == "")
+                    error += 'Mã thuộc tính không được rỗng\n';
+                if (thuocTinh.TenThuocTinh == null || thuocTinh.TenThuocTinh == "")
+                    error += 'Tên thuộc tính không được rỗng';
+                if (error != "") {
+                    $window.alert(error);
+                    return;
+                }
+                for (var i = 0; i < $scope.nhomSanPham.ThuocTinhs.length; i++) {
+                    if ($scope.nhomSanPham.ThuocTinhs[i].MaThuocTinh == thuocTinh.MaThuocTinh) {
+                        $window.alert("Mã thuộc tính đã tồn tại");
+                        return;
+                    }
+                }
+                var copy = angular.copy(thuocTinh);
+                copy.NhomSanPhamID = $scope.nhomSanPham.NhomSanPhamID;
+
+                $scope.nhomSanPham.ThuocTinhs.push(copy);
+                $scope.nhomSanPham.ThuocTinh.MaThuocTinh = '';
+                $scope.nhomSanPham.ThuocTinh.TenThuocTinh = '';
+                $scope.nhomSanPham.ThuocTinh.DonViTinh = '';
+                $("#txtMaThuocTinh").focus();
+            };
+
+            $scope.removeThuocTinh = function (maThuocTinh) {
+                for (var i = 0; i < $scope.nhomSanPham.ThuocTinhs.length; i++) {
+                    if ($scope.nhomSanPham.ThuocTinhs[i].MaThuocTinh == maThuocTinh) {
+                        $scope.nhomSanPham.ThuocTinhs.splice(i, 1);
+                    }
+                }
+            };
+
+            $scope.edit = function (nhomSanPham) {
+                $http.post("/Administrator/NhomSanPham/Update/", nhomSanPham).then(function (r) {
+                    var error = r.data;
+                    if (error.HasError == true) {
+                        $window.alert(error.Message);
+                    }
+                    else {
+                        $window.location.href = '/Administrator/NhomSanPham/Index';
+                    }
+                });
+            }
+        });
+    </script>
+}

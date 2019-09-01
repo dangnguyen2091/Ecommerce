@@ -1,0 +1,59 @@
+﻿@{
+    ViewBag.Title = "Xóa sản phẩm";
+}
+
+<form name="Form" ng-app="myNgApp" ng-controller="myController">
+    <div class="form-horizontal">
+        <div class="row">
+            <h2 class="col-md-12">Bạn có chắc muốn xóa sản phẩm?</h2>
+        </div>
+        <hr />
+        <div class="form-group">
+            <div class="col-md-1">
+                <label>Mã</label>
+            </div>
+            <div class="col-md-10">
+                {{sanPham.MaSanPham}}
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-1">
+                <label>Tên</label>
+            </div>
+            <div class="col-md-10">
+                {{sanPham.TenSanPham}}
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-2">
+                <input class="btn btn-danger" type="button" value="Xóa"
+                       style="width:70px;"
+                       ng-click="delete(sanPham)" />
+                <br /><br />
+                <a href="/Administrator/SanPham/Index">Trở lại danh sách</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section scripts{
+    <script>
+        var ngApp = angular.module('myNgApp', []);
+        ngApp.controller('myController', function ($scope, $http, $window) {
+            var model = '@Html.Raw(Json.Encode(Model))';
+            $scope.sanPham = JSON.parse(model);
+
+            $scope.delete = function (sanPham) {
+                $http.post("/Administrator/SanPham/Delete/", sanPham).then(function (r) {
+                    var error = r.data;
+                    if (error.HasError == true) {
+                        $window.alert(error.Message);
+                    }
+                    else {
+                        $window.location.href = '/Administrator/SanPham/Index';
+                    }
+                });
+            }
+        });
+    </script>
+}

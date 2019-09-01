@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E4846D2D-48FB-4773-8243-2645A237CD0B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ecommerce.DataLayer</RootNamespace>
+    <AssemblyName>Ecommerce.DataLayer</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Context\ChucNang.cs">
+      <DependentUpon>EcommerceDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\DonHang.cs">
+      <DependentUpon>EcommerceDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\DonHangCT.cs">
+      <DependentUpon>EcommerceDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\EcommerceDataModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EcommerceDataModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\EcommerceDataModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EcommerceDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\EcommerceDataModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EcommerceDataModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Context\GioHang.cs">
+      <DependentUpon>EcommerceDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\HinhThucThanhToan.cs">
+      <DependentUpon>EcommerceDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\KhachHang.cs">
+      <DependentUpon>EcommerceDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\NhanVien.cs">
+      <DependentUpon>EcommerceDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\NhomNguoiDung.cs">
+      <DependentUpon>EcommerceDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\NhomSanPham.cs">
+      <DependentUpon>EcommerceDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\PhanQuyen.cs">
+      <DependentUpon>EcommerceDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\SanPham.cs">
+      <DependentUpon>EcommerceDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\TaiKhoan.cs">
+      <DependentUpon>EcommerceDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\ThuocTinh.cs">
+      <DependentUpon>EcommerceDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\TinhTrangDonHang.cs">
+      <DependentUpon>EcommerceDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAO\DonHangDAO.cs" />
+    <Compile Include="DAO\HinhThucThanhToanDAO.cs" />
+    <Compile Include="DAO\NhomSanPhamDAO.cs" />
+    <Compile Include="DAO\PhanQuyenDAO.cs" />
+    <Compile Include="DAO\SanPhamDAO.cs" />
+    <Compile Include="DAO\TaiKhoanDAO.cs" />
+    <Compile Include="DAO\ThuocTinhDAO.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ecommerce.Common\Ecommerce.Common.csproj">
+      <Project>{50e504a4-0d10-4a37-bb41-4518fbdfa0a3}</Project>
+      <Name>Ecommerce.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <EntityDeploy Include="Context\EcommerceDataModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>EcommerceDataModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Context\EcommerceDataModel.edmx.diagram">
+      <DependentUpon>EcommerceDataModel.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Context\EcommerceDataModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>EcommerceDataModel.edmx</DependentUpon>
+      <LastGenOutput>EcommerceDataModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Context\EcommerceDataModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>EcommerceDataModel.edmx</DependentUpon>
+      <LastGenOutput>EcommerceDataModel.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

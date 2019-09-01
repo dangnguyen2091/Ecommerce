@@ -1,0 +1,132 @@
+﻿
+@{
+    ViewBag.Title = "Cart";
+}
+<div class="site-section" ng-controller="myController">
+    <div class="container">
+        <div class="row mb-5">
+            <form class="col-md-12" method="post">
+                <div class="site-blocks-table">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="product-thumbnail">Hình ảnh</th>
+                                <th class="product-name">Sản phẩm</th>
+                                <th class="product-price">Đơn giá</th>
+                                <th class="product-quantity">Số lượng</th>
+                                <th class="product-total">Thành tiền</th>
+                                <th class="product-remove">Bỏ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="s in sanPhams">
+                                <td class="product-thumbnail">
+                                    <img src="{{s.HinhAnhUrl}}" alt="Image" class="img-fluid">
+                                </td>
+                                <td class="product-name">
+                                    <h2 class="h5 text-black">{{s.TenSanPham}}</h2>
+                                </td>
+                                <td>{{s.DonGia | number}}</td>
+                                <td>
+                                    <div class="input-group mb-3" style="max-width: 130px; min-width:100px">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-outline-primary" type="button"
+                                                    ng-click="giamSoLuong(s)">&minus;</button>
+                                        </div>
+                                        <input type="text" class="form-control text-center" ng-model="s.SoLuong" placeholder=""
+                                               aria-label="Example text with button addon" aria-describedby="button-addon1" disabled>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-primary" type="button"
+                                                    ng-click="tangSoLuong(s)">&plus;</button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{s.DonGia * s.SoLuong | number}}</td>
+                                <td><a href="#" class="btn btn-primary height-auto btn-sm"
+                                       ng-click="removeSanPham(s.SanPhamID)">X</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 pl-5">
+                <div class="row justify-content-end">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-12 text-right border-bottom mb-5">
+                                <h3 class="text-black h4 text-uppercase">Tổng cộng</h3>
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <div class="col-md-6">
+                                <span class="text-black"></span>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <strong class="text-black">{{total | number}} VNĐ</strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button class="btn btn-primary btn-lg btn-block" 
+                                        onclick="window.location='/Home/Checkout/'"
+                                        ng-if="sanPhams.length > 0">
+                                    Thanh toán
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        ngApp.controller('myController', function ($scope, $http, $window) {
+            var model = '@Html.Raw(Json.Encode(Model))';
+            $scope.sanPhams = JSON.parse(model);
+            $scope.sumThanhTien = function () {
+                var sum = 0;
+                for (var i = 0; i < $scope.sanPhams.length; i++) {
+                    sum += $scope.sanPhams[i].SoLuong * $scope.sanPhams[i].DonGia;
+                }
+                $scope.total = sum;
+            }
+            $scope.sumThanhTien();
+            
+            $scope.capNhatGioHang = function () {
+                $http.post("/Home/CapNhatGioHang/", $scope.sanPhams).then(function (r) {
+                    var error = r.data;
+                    if (error.HasError == true) {
+                        $window.alert(error.Message);
+                    }
+                    else {
+                        location.reload();
+                    }
+                });
+            }
+            $scope.giamSoLuong = function (sanPham) {
+                if (sanPham.SoLuong == 1) return;
+                sanPham.SoLuong = sanPham.SoLuong - 1;
+                $scope.capNhatGioHang();
+            }
+            $scope.tangSoLuong = function (sanPham) {
+                sanPham.SoLuong = sanPham.SoLuong + 1;
+                $scope.capNhatGioHang();
+            }
+            $scope.removeSanPham = function (sanPhamID) {
+                var yesno = confirm("Bạn có chắc muốn xóa sản phẩm khỏi giỏ hàng?");
+                if (yesno == false) return;
+
+                for (var i = 0; i < $scope.sanPhams.length; i++) {
+                    if ($scope.sanPhams[i].SanPhamID == sanPhamID)
+                        $scope.sanPhams.splice(i, 1);
+                }
+                $scope.capNhatGioHang();
+            }
+        });
+    </script>
+}

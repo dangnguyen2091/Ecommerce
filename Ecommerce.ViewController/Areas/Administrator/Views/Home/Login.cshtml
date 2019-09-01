@@ -1,0 +1,73 @@
+﻿@{ Layout = null; }
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/Content/bootstrap.css" rel="stylesheet" />
+    <link href="/Content/site.css" rel="stylesheet" />
+    <script src="/Scripts/modernizr-2.8.3.js"></script>
+    <script src="/Scripts/jquery-3.3.1.js"></script>
+    <script src="/Scripts/bootstrap.js"></script>
+    <script src="/Scripts/angular.js"></script>
+    <script>
+        var ngApp = angular.module('myNgApp', []);
+        ngApp.controller('myController', function ($scope, $http, $window) {
+            var model = '@Html.Raw(Json.Encode(Model))';
+            $scope.dangNhap = JSON.parse(model);
+            $("#txtTenDangNhap").focus();
+
+            $scope.login = function (dangNhap) {
+                $http.post("/Administrator/Home/Login/", dangNhap).then(function (r) {
+                    var error = r.data;
+                    if (error.HasError == true) {
+                        $window.alert(error.Message);
+                    }
+                    else {
+                        if ($scope.dangNhap.RequestUrl == null)
+                            $window.location.href = '/Administrator/Home/Index';
+                        else
+                            $window.location.href = $scope.dangNhap.RequestUrl;
+                    }
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container body-content">
+        <form name="Form" ng-app="myNgApp" ng-controller="myController">
+            <div class="form-horizontal">
+                <div class="row" style="text-align:center;">
+                    <h1 class="col-md-12">ĐĂNG NHẬP HỆ THỐNG</h1>
+                </div>
+                <hr />
+                <div class="form-group">
+                    <div class="col-md-offset-4 col-md-4">
+                        <label>Tên đăng nhập</label>
+                        <input id="txtTenDangNhap" class="form-control" type="text" name="TenDangNhap"
+                               ng-model="dangNhap.TenDangNhap" ng-required="true" />
+                        <span class="field-validation-valid text-danger"
+                              ng-show="Form.TenDangNhap.$error.required">Không được rỗng</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-4 col-md-4">
+                        <label>Mật khẩu</label>
+                        <input class="form-control" type="password" name="MatKhau"
+                               ng-model="dangNhap.MatKhau" ng-required="true" />
+                        <span class="field-validation-valid text-danger"
+                              ng-show="Form.MatKhau.$error.required">Không được rỗng</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-4 col-md-5">
+                        <input class="btn btn-default" type="button" value="Đăng nhập"
+                               ng-click="login(dangNhap)" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

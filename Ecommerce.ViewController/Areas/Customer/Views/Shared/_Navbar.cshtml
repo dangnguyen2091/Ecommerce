@@ -1,0 +1,77 @@
+﻿<div class="site-navbar py-2"
+     ng-controller="navbarController">
+    <script>
+        ngApp.controller('navbarController', function ($scope, $http, $window) {
+            $http.get("/Home/GetNhomSanPham/").then(function (r) {
+                $scope.nhomSanPhams = r.data;
+            });
+            $http.get("/Home/GetSoLuongTrongGio/").then(function (r) {
+                $scope.soLuongTrongGio = r.data;
+            });
+            $scope.action = '@ViewContext.RouteData.Values["action"].ToString()';
+            $scope.searchtext = '';
+            $scope.search = function () {
+                if ($scope.searchtext != '') {
+                    $window.location.href = '/Home/Search?search=' + $scope.searchtext;
+                }
+            }
+        });
+    </script>
+    <div class="search-wrap">
+        <div class="container">
+            <a href="#" class="search-close js-search-close"><span class="icon-close"></span></a>
+            <input type="text" class="form-control" placeholder="Gõ và nhấn enter..."
+                   ng-model="searchtext" ng-keydown="$event.keyCode === 13 && search()">
+        </div>
+    </div>
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="logo">
+                <div class="site-logo">
+                    <a href="/Home/Index" class="js-logo-clone">SACHONLINE.COM</a>
+                </div>
+            </div>
+            <div class="main-nav d-none d-lg-block">
+                <nav class="site-navigation text-right text-md-center" role="navigation">
+                    <script type="text/ng-template" id="treeMenu" class="main-navigation">
+                        <a href="/Home/Product?nspId={{s.NhomSanPhamID}}">{{s.TenNhomSanPham}}</a>
+                        <ul class="dropdown"
+                            ng-if="(nhomSanPhams | filter: {NhomSanPhamChaID : s.NhomSanPhamID}).length > 0">
+                            <li ng-repeat="s in nhomSanPhams | filter:{NhomSanPhamChaID : s.NhomSanPhamID}"
+                                ng-include="'treeMenu'"></li>
+                        </ul>
+                    </script>
+                    <ul class="site-menu js-clone-nav d-none d-lg-block">
+                        <li ng-class="{'active': action == 'Index'}">
+                            <a href="/Home/Index">Trang chủ</a>
+                        </li>
+                        <li class="has-children">
+                            <a href="/Home/Product/">Sản phẩm</a>
+                            <ul class="dropdown">
+                                <li ng-repeat="s in nhomSanPhams | filter: {NhomSanPhamChaID : null}" ng-include="'treeMenu'"
+                                    ng-class="{'has-children': (nhomSanPhams | filter: {NhomSanPhamChaID : s.NhomSanPhamID}).length > 0}">
+                                </li>
+                            </ul>
+                        </li>
+                        <li ng-class="{'active': action == 'About'}">
+                            <a href="/Home/About">Giới thiệu</a>
+                        </li>
+                        <li ng-class="{'active': action == 'Contact'}">
+                            <a href="/Home/Contact">Liên hệ</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="icons">
+                <a href="#" class="icons-btn d-inline-block js-search-open"><span class="icon-search"></span></a>
+                <a href="/Home/Cart" class="icons-btn d-inline-block bag">
+                    <span class="icon-shopping-bag"></span>
+                    <span class="number">{{soLuongTrongGio}}</span>
+                </a>
+                <a href="#" class="site-menu-toggle js-menu-toggle ml-3 d-inline-block d-lg-none">
+                    <span class="icon-menu"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

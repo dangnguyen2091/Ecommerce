@@ -1,0 +1,123 @@
+﻿@using Ecommerce.Enums;
+@using Ecommerce.ViewModel;
+
+@{
+    ViewBag.Title = "Product";
+    List<NhomSanPhamDisplayViewModel> nhomSPHierarchy = (List<NhomSanPhamDisplayViewModel>)ViewBag.NhomSPHierarchy;
+}
+<div class="bg-light py-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 mb-0">
+                @if (nhomSPHierarchy.Count == 0)
+                {
+                    <strong class="text-black">Tất cả sản phẩm</strong>
+                }
+                else
+                {
+                    foreach (NhomSanPhamDisplayViewModel v in nhomSPHierarchy)
+                    {
+                        string link = string.Format("/Home/Product?nspId={0}", v.NhomSanPhamID);
+                        <span class="mx-2 mb-0">/</span>
+                        <a href="@link">@v.TenNhomSanPham</a>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="site-section" style="padding-top:20px;"
+     ng-controller="myController">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 text-right">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            Sắp xếp: {{orderText | lowercase}}
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a id="hypNameAsc" href="#" ng-click="orderSanPham('@OrderBy.NameAsc')">&ensp;Tên a-z</a></li>
+                            <li><a id="hypNameDesc" href="#" ng-click="orderSanPham('@OrderBy.NameDesc')">&ensp;Tên z-a</a></li>
+                            <li><a id="hypPriceAsc" href="#" ng-click="orderSanPham('@OrderBy.PriceAsc')">&ensp;Giá tăng</a></li>
+                            <li><a id="hypPriceDesc" href="#" ng-click="orderSanPham('@OrderBy.PriceDesc')">&ensp;Giá giảm</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <br /><br />
+        <div class="row">
+            <div class="col-sm-6 col-lg-4 text-center item mb-4"
+                 ng-repeat="s in pager.Items">
+                <a href="/Home/Detail/{{s.SanPhamID}}">
+                    <img src="{{s.HinhAnhUrl}}" alt="Image" width="300">
+                </a>
+                <br /><br />
+                <h3 class="text-dark">
+                    <a href="/Home/Detail/{{s.SanPhamID}}">{{s.TenSanPham}}</a>
+                </h3>
+                <p class="price">{{s.DonGia | number}} VNĐ</p>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12 text-center">
+                <div class="site-block-27">
+                    <ul>
+                        <li ng-if="pager.CurrentPage > 1">
+                            <a href="#" ng-click="getSanPham(1)">&lt;&lt;</a>
+                        </li>
+                        <li ng-if="pager.CurrentPage > 1">
+                            <a href="#" ng-click="getSanPham(pager.CurrentPage - 1)">&lt;</a>
+                        </li>
+                        <li ng-repeat="i in pager.DisplayPages"
+                            ng-class="{active: i == pager.CurrentPage}">
+                            <a href="#" ng-click="getSanPham(i, order)">{{i}}</a>
+                        </li>
+                        <li ng-if="pager.CurrentPage < pager.TotalPages">
+                            <a href="#" ng-click="getSanPham(pager.CurrentPage + 1)">&gt;</a>
+                        </li>
+                        <li ng-if="pager.CurrentPage < pager.TotalPages">
+                            <a href="#" ng-click="getSanPham(pager.TotalPages)">&gt;&gt;</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        ngApp.controller('myController', function ($scope, $http, $window) {
+            $scope.nhomSanPham = '@Model';
+            $scope.order = '@OrderBy.NameAsc';
+            $scope.orderText = "";
+            $scope.getSanPham = function (page) {
+                $http.get("/Home/GetSanPhamByNhomSanPham?nspId=" + $scope.nhomSanPham
+                    + "&pageIndex=" + page + "&order=" + $scope.order).then(function (r) {
+                        $scope.pager = r.data;
+                        $(window).scrollTop(0); 
+                });  
+            }
+            $scope.getOrderText = function () {
+                if ($scope.order == '@OrderBy.NameAsc')
+                    $scope.orderText = document.getElementById("hypNameAsc").innerHTML;
+                if ($scope.order == '@OrderBy.NameDesc')
+                    $scope.orderText = document.getElementById("hypNameDesc").innerHTML;
+                if ($scope.order == '@OrderBy.PriceAsc')
+                    $scope.orderText = document.getElementById("hypPriceAsc").innerHTML;
+                if ($scope.order == '@OrderBy.PriceDesc')
+                    $scope.orderText = document.getElementById("hypPriceDesc").innerHTML;
+            }
+            $scope.orderSanPham = function (order) {
+                $scope.order = order;
+                $scope.getSanPham($scope.pager.CurrentPage, $scope.order);
+                $scope.getOrderText();
+            }
+            $scope.getSanPham(1);
+            $scope.getOrderText();
+        });
+    </script>
+}

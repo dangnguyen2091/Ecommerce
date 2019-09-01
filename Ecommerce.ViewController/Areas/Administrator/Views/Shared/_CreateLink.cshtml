@@ -1,0 +1,8 @@
+﻿@model Ecommerce.Common.Struct.CRUD
+@{
+    if (Model.CanCreate)
+    {
+        string link = "/Administrator/" + Model.Controller + "/Create";
+        <a href="@link">Thêm mới</a>
+    }
+}

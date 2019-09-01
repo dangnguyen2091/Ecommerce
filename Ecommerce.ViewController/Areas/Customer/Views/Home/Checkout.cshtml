@@ -1,0 +1,112 @@
+﻿
+@{
+    ViewBag.Title = "Checkout";
+}
+<div class="site-section" ng-controller="myController">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mb-5 mb-md-0">
+                <h2 class="h3 mb-3 text-black">Chi tiết giao hàng</h2>
+                <div class="p-3 p-lg-5 border">
+                    <div class="form-group">
+                        <label for="c_country" class="text-black">Hình thức thanh toán <span class="text-danger">*</span></label>
+                        <select id="c_country" class="form-control"
+                                ng-model="donHang.HinhThucThanhToan">
+                            <option ng-repeat="h in donHang.HinhThucThanhToanCollection"
+                                    value="{{h.HinhThucThanhToanID}}">{{h.TenHinhThucThanhToan}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <label for="c_companyname" class="text-black">Người nhận <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="c_companyname" name="c_companyname" ng-model="donHang.NguoiNhan">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <label for="c_address" class="text-black">Địa chỉ nhận hàng <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="c_address" name="c_address" ng-model="donHang.DiaChiNhan">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <label for="c_email_address" class="text-black">Email</label>
+                            <input type="text" class="form-control" id="c_email_address" name="c_email_address">
+                        </div>
+                    </div>
+                    <div class="form-group row">                        
+                        <div class="col-md-12">
+                            <label for="c_phone" class="text-black">Số điện thoại <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="c_phone" name="c_phone" ng-model="donHang.SdtNguoiNhan">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="c_order_notes" class="text-black">Ghi chú</label>
+                        <textarea name="c_order_notes" id="c_order_notes" cols="30" rows="5" class="form-control"
+                                  ng-model="donHang.GhiChu"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row mb-5">
+                    <div class="col-md-12">
+                        <h2 class="h3 mb-3 text-black">Giỏ hàng</h2>
+                        <div class="p-3 p-lg-5 border">
+                            <table class="table site-block-order-table mb-5">
+                                <thead>
+                                    <th>Sản phẩm</th>
+                                    <th>Thành tiền</th>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="s in donHang.GioHangItems">
+                                        <td>{{s.TenSanPham}} <strong class="mx-2">x</strong> {{s.SoLuong | number}}</td>
+                                        <td>{{s.SoLuong * s.DonGia| number}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-black font-weight-bold"><strong>Tổng cộng</strong></td>
+                                        <td class="text-black font-weight-bold"><strong>{{total | number}}</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="form-group">
+                                <button class="btn btn-primary btn-lg btn-block" ng-click="datHang(donHang)">
+                                    Đặt hàng
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- </form> -->
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        ngApp.controller('myController', function ($scope, $http, $window) {
+            var model = '@Html.Raw(Json.Encode(Model))';
+            $scope.donHang = JSON.parse(model);
+            $scope.sumThanhTien = function () {
+                var sum = 0;
+                for (var i = 0; i < $scope.donHang.GioHangItems.length; i++) {
+                    sum += $scope.donHang.GioHangItems[i].SoLuong * $scope.donHang.GioHangItems[i].DonGia;
+                }
+                $scope.total = sum;
+            }
+            $scope.sumThanhTien();
+            $scope.datHang = function (donHang) {
+                $http.post("/Home/DatHang/", donHang).then(function (r) {
+                    var error = r.data;
+                    if (error.HasError == true) {
+                        $window.alert(error.Message);
+                    }
+                    else {
+                        $window.location.href = '/Home/Thanks';
+                    }
+                });
+            }
+        });
+    </script>
+}

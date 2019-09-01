@@ -1,0 +1,120 @@
+﻿@model Ecommerce.ViewModel.SanPhamViewModel
+@{
+    ViewBag.Title = "Thêm sản phẩm";
+}
+
+<form id="myForm" name="Form" ng-app="myNgApp" ng-controller="myController">
+    <div id="div1" class="form-horizontal">
+        <div class="row" style="text-align:center;">
+            <h2 class="col-md-12">SẢN PHẨM</h2>
+        </div>
+        <hr />
+        <div class="form-group">
+            <div class="col-md-6">
+                Mã sản phẩm (*)
+                <input id="txtMaSanPham" class="form-control input-sm" type="text" name="MaSanPham"
+                       ng-model="sanPham.MaSanPham" />
+            </div>
+            <div class="col-md-6">
+                Tên sản phẩm (*)
+                <input class="form-control input-sm" type="text" name="TenSanPham"
+                       ng-model="sanPham.TenSanPham" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-6">
+                Nhóm sản phẩm (*)
+                <select class="form-control input-sm" name="NhomSanPhamID"
+                        ng-model="sanPham.NhomSanPhamID" ng-change="changeNhomSanPham(sanPham.NhomSanPhamID)"
+                        ng-options="s.NhomSanPhamID as s.TenNhomSanPham for s in sanPham.NhomSanPhamCollection">
+                </select>
+            </div>
+            <div class="col-md-6">
+                Đơn giá (*)
+                <input class="form-control input-sm" type="number" name="DonGia"
+                       ng-model="sanPham.DonGia" />
+            </div>        
+        </div>
+        <div class="form-group">
+            <div class="panel panel-default col-md-6" style="border:hidden;">
+                <br />
+                <div class="panel-heading"><strong>Định nghĩa thuộc tính</strong></div>
+                <div class="panel-body">
+                    <table class="table">
+                        <tr ng-repeat="s in sanPham.ThuocTinhs">
+                            <td>{{s.TenThuocTinh}}</td>
+                            <th>
+                                <input class="form-control input-sm" type="text"
+                                       ng-model="s.GiaTri" />
+                            </th>
+                            <td>{{s.DonViTinh}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-6">
+                Mô tả
+                <textarea class="form-control input-sm" name="MoTa"
+                          style="height:300px;"
+                          ng-model="sanPham.MoTa">
+                </textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-12">
+                <label>Upload hình ảnh</label>
+                <input id="inputFile" type="file" name="FileUpload"  accept="image/*" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-2">
+                <input class="btn btn-primary" type="button" value="Lưu"
+                       style="width:70px;"
+                       ng-click="create(sanPham)" />
+                <br /><br />
+                <a href="/Administrator/SanPham/Index">Trở lại danh sách</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section scripts{
+    <script>
+        var ngApp = angular.module('myNgApp', []);
+        ngApp.controller('myController', function ($scope, $http, $window) {
+            var model = '@Html.Raw(Json.Encode(Model))';
+            $scope.sanPham = JSON.parse(model);
+            $scope.pureSanPham = angular.copy($scope.sanPham);
+            $("#txtMaSanPham").focus();
+
+            $scope.changeNhomSanPham = function (id) {
+                $http.get("/Administrator/SanPham/ViewThuocTinh?nspId=" + id).then(function (r) {
+                    $scope.sanPham.ThuocTinhs = r.data;
+                });
+            }
+
+            $scope.create = function (sanPham) {
+                // do post luôn file upload nên phải sử dụng formData
+                var formData = new FormData($('#myForm')[0]);
+                formData.append("NhomSanPhamID", sanPham.NhomSanPhamID);
+                formData.append("ThuocTinhs", JSON.stringify(sanPham.ThuocTinhs));
+
+                $http.post("/Administrator/SanPham/Create/", formData, {
+                     transformRequest: angular.identity,
+                     headers: {'Content-Type': undefined}
+                }).then(function (r) {
+                    var error = r.data;
+                    if (error.HasError == true) {
+                        $window.alert(error.Message);
+                    }
+                    else {
+                        $scope.sanPham = angular.copy($scope.pureSanPham);
+                        $("#inputFile").val('');
+                        $("#txtMaSanPham").focus();
+                        $(window).scrollTop(0);                        
+                    }
+                });
+            }
+        });
+    </script>
+}

@@ -1,0 +1,23 @@
+﻿@using Ecommerce.ViewModel;
+@using Ecommerce.Helpers;
+@{
+    ViewBag.Title = "Administrator";
+    Layout = "~/Areas/Administrator/Views/Shared/_Layout.cshtml";
+    TaiKhoanViewModel taiKhoan = (TaiKhoanViewModel)@HttpContext.Current.Session[SessionName.UserAdmin];
+}
+<h1>Xin chào, @taiKhoan.TenNhanVien!</h1>
+<div ng-app="myApp" ng-controller="myController">
+    Hôm nay: {{now | date:'dd/MM/yyyy HH:mm:ss'}}
+</div>
+@section scripts{
+    <script>
+        var myApp = angular.module('myApp', []);
+        myApp.controller("myController", function ($scope, $interval) {
+            $scope.now = new Date();
+            var increaseCounter = function () {
+                $scope.now = new Date();
+            }
+            $interval(increaseCounter, 1000);
+        });
+</script>
+}

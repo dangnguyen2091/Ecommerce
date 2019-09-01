@@ -1,0 +1,213 @@
+﻿CREATE DATABASE Ecommerce;
+GO
+USE Ecommerce;
+GO
+
+CREATE TYPE dbo.MACODE FROM VARCHAR(50);
+CREATE TYPE dbo.FREETYPE FROM NVARCHAR(255);
+GO
+
+
+CREATE SCHEMA ENUM;
+GO
+CREATE TABLE ENUM.HinhThucThanhToan
+(
+	ID INT NOT NULL,
+	TenHinhThucThanhToan dbo.FREETYPE NOT NULL,
+	KichHoat BIT NOT NULL,
+	CONSTRAINT PK_HinhThucThanhToan_ID PRIMARY KEY (ID)
+);
+INSERT INTO ENUM.HinhThucThanhToan (ID, TenHinhThucThanhToan, KichHoat)
+VALUES (1, N'Trả tiền mặt khi nhận hàng', 1), 
+	   (2, N'Chuyển khoản ngân hàng', 1), 
+	   (3, N'Thanh toán qua thẻ', 1);
+
+CREATE TABLE ENUM.TinhTrangDonHang
+(
+	ID INT NOT NULL,
+	TenTinhTrangDonHang dbo.FREETYPE NOT NULL,
+	CONSTRAINT PK_TinhTrangDonHang_ID PRIMARY KEY (ID)
+);
+INSERT INTO ENUM.TinhTrangDonHang (ID, TenTinhTrangDonHang)
+VALUES (1, N'Đã tiếp nhận'), (2, N'Đang đóng gói'),
+	   (3, N'Đang giao hàng'), (4, N'Giao hàng thành công'),
+	   (5, N'Hủy');
+GO
+
+
+CREATE SCHEMA DANHMUC;
+GO
+CREATE TABLE DANHMUC.KhachHang
+(
+	ID INT IDENTITY NOT NULL,
+	MaKhachHang dbo.MACODE NOT NULL,
+	TenKhachHang dbo.FREETYPE NOT NULL,
+	Sdt dbo.FREETYPE NULL,
+	Email dbo.FREETYPE NOT NULL,
+	MatKhau VARCHAR(50) NOT NULL,
+	CONSTRAINT PK_KhacHang_ID PRIMARY KEY (ID),
+	CONSTRAINT UQ_KhachHang_MaKhachHang UNIQUE (MaKhachHang),
+	CONSTRAINT UQ_KhachHang_Email UNIQUE (Email)
+);
+INSERT INTO DANHMUC.KhachHang (MaKhachHang, TenKhachHang, Sdt, Email, MatKhau)
+VALUES('$ANONYMOUS', N'Anonymous', NULL, '', '');
+
+CREATE TABLE DANHMUC.NhomSanPham
+(
+	ID INT IDENTITY NOT NULL,
+	MaNhomSanPham dbo.MACODE NOT NULL,
+	TenNhomSanPham dbo.FREETYPE NOT NULL,
+	NhomSanPhamChaID INT NULL,
+	CONSTRAINT PK_NhomSanPham_ID PRIMARY KEY (ID),
+	CONSTRAINT UQ_NhomSanPham_Ma UNIQUE (MaNhomSanPham),
+	CONSTRAINT FK_NhomSanPham_NhomSanPhamID FOREIGN KEY (NhomSanPhamChaID) REFERENCES DANHMUC.NhomSanPham (ID)
+);
+
+CREATE TABLE DANHMUC.ThuocTinh
+(
+	ID INT IDENTITY NOT NULL,
+	NhomSanPhamID INT NOT NULL, -- FOREIGN KEY
+	MaThuocTinh dbo.MACODE NOT NULL,
+	TenThuocTinh dbo.FREETYPE NOT NULL,
+	DonViTinh dbo.FREETYPE NULL,
+	CONSTRAINT PK_NhomSanPham_ThuocTinh_ID PRIMARY KEY (ID),
+	CONSTRAINT UQ_NhomSanPham_ThuocTinh_NhomSanPhamID_MaThuocTinh UNIQUE (NhomSanPhamID, MaThuocTinh),
+	CONSTRAINT FK_NhomSanPham_ThuocTinh_NhomSanPhamID FOREIGN KEY (NhomSanPhamID) REFERENCES DANHMUC.NhomSanPham (ID)
+);
+
+CREATE TABLE DANHMUC.SanPham
+(
+	ID INT IDENTITY NOT NULL,
+	MaSanPham dbo.MACODE NOT NULL,
+	TenSanPham dbo.FREETYPE NOT NULL,
+	NhomSanPhamID INT NOT NULL, -- FOREIGN KEY
+	DonGia MONEY NOT NULL,
+	MoTa NVARCHAR(MAX) NULL,
+	HinhAnh VARCHAR(50) NULL, -- LƯU TÊN HÌNH
+	ThuocTinh NVARCHAR(MAX) NULL, -- JSON
+	CONSTRAINT PK_SanPham_ID PRIMARY KEY (ID),
+	CONSTRAINT UQ_SanPham_Ma UNIQUE (MaSanPham),
+	CONSTRAINT FK_SanPham_NhomSanPhamID FOREIGN KEY (NhomSanPhamID) REFERENCES DANHMUC.NhomSanPham (ID)
+);
+GO
+
+
+CREATE SCHEMA QUANTRI;
+GO
+CREATE TABLE QUANTRI.ChucNang
+(
+	ID INT IDENTITY NOT NULL,
+	MaChucNang dbo.MACODE NOT NULL,
+	TenChucNang dbo.FREETYPE NOT NULL,
+	Xem BIT NOT NULL,
+	Them BIT NOT NULL,
+	Sua BIT NOT NULL,
+	Xoa BIT NOT NULL,
+	CONSTRAINT PK_ChucNang_ID PRIMARY KEY (ID),
+	CONSTRAINT UQ_ChucNang_Ma UNIQUE (MaChucNang)
+);
+INSERT INTO QUANTRI.ChucNang (MaChucNang, TenChucNang, Xem, Them, Sua, Xoa)
+VALUES ('NhomSanPham', N'Nhóm sản phẩm', 1, 1, 1, 1), 
+	   ('SanPham', N'Sản phẩm', 1, 1, 1, 1);
+
+CREATE TABLE QUANTRI.NhomNguoiDung
+(
+	ID INT IDENTITY NOT NULL,
+	MaNhomNguoiDung dbo.MACODE NOT NULL,
+	TenNhomNguoiDung dbo.FREETYPE NOT NULL,
+	CONSTRAINT PK_NhomNguoiDung_ID PRIMARY KEY (ID),
+	CONSTRAINT UQ_NhomNguoiDung_Ma UNIQUE (MaNhomNguoiDung),
+);
+INSERT INTO QUANTRI.NhomNguoiDung (MaNhomNguoiDung, TenNhomNguoiDung)
+VALUES ('ADM', N'Admnistrator');
+
+CREATE TABLE QUANTRI.PhanQuyen -- Chức năng mà nhóm người dùng được sử dụng
+(
+	ID INT IDENTITY NOT NULL,
+	NhomNguoiDungID INT NOT NULL,
+	ChucNangID INT NOT NULL,
+	Xem BIT NULL,
+	Them BIT NULL,
+	Sua BIT NULL,
+	Xoa BIT NULL,
+	CONSTRAINT PK_PhanQuyen_ID PRIMARY KEY (ID),
+	CONSTRAINT UQ_PhanQuyen_NhomNguoiDungID_ChucNangID UNIQUE (NhomNguoiDungID, ChucNangID),
+	CONSTRAINT FK_PhanQuyen_NhomNguoiDungID FOREIGN KEY (NhomNguoiDungID) REFERENCES QUANTRI.NhomNguoiDung (ID),
+	CONSTRAINT FK_PhanQuyen_ChucNangID FOREIGN KEY (ChucNangID) REFERENCES QUANTRI.ChucNang (ID)
+);
+INSERT INTO QUANTRI.PhanQuyen (NhomNguoiDungID, ChucNangID, Xem, Them, Sua, Xoa)
+VALUES (1, 1, 1, 1, 1, 1), (1, 2, 1, 1, 1, 1);
+
+CREATE TABLE QUANTRI.NhanVien
+(
+	ID INT IDENTITY NOT NULL,
+	MaNhanVien dbo.MACODE NOT NULL,
+	TenNhanVien dbo.FREETYPE NOT NULL,
+	NhomNguoiDungID INT NOT NULL,
+	CONSTRAINT PK_NhanVien_ID PRIMARY KEY (ID),
+	CONSTRAINT UQ_NhanVien_Ma UNIQUE (MaNhanVien),
+	CONSTRAINT FK_NhanVien_NhomNguoiDungID FOREIGN KEY (NhomNguoiDungID) REFERENCES QUANTRI.NhomNguoiDung (ID)
+);
+INSERT INTO QUANTRI.NhanVien (MaNhanVien, TenNhanVien, NhomNguoiDungID)
+VALUES ('NV1', N'Nguyễn Hữu Bảo Đăng', 1);
+
+CREATE TABLE QUANTRI.TaiKhoan
+(
+	NhanVienID INT NOT NULL,
+	TenDangNhap VARCHAR(50) NOT NULL,
+	MatKhau VARCHAR(50) NOT NULL,
+	CONSTRAINT PK_TaiKhoan_NhanVienID PRIMARY KEY (NhanVienID),
+	CONSTRAINT UQ_TaiKhoan_TaiKhoan UNIQUE (TenDangNhap),
+	CONSTRAINT FK_TaiKhoan_NhanVienID FOREIGN KEY (NhanVienID) REFERENCES QUANTRI.NhanVien (ID)
+);
+INSERT INTO QUANTRI.TaiKhoan (NhanVienID, TenDangNhap, MatKhau)
+VALUES (1, 'admin', 1);
+GO
+
+
+CREATE SCHEMA MUAHANG;
+GO
+CREATE TABLE MUAHANG.GioHang
+(
+	ID INT IDENTITY NOT NULL,
+	KhachHangID INT NOT NULL,
+	SanPhamID INT NOT NULL,
+	SoLuong INT NOT NULL
+	CONSTRAINT PK_GioHang_ID PRIMARY KEY (ID),
+	CONSTRAINT UQ_GiaoHang_KhachHangID_SanPhamID UNIQUE (KhachHangID, SanPhamID),
+	CONSTRAINT FK_GioHang_KhachHangID FOREIGN KEY (KhachHangID) REFERENCES DANHMUC.KhachHang (ID),
+	CONSTRAINT FK_GioHang_SanPhamID FOREIGN KEY (SanPhamID) REFERENCES DANHMUC.SanPham (ID)
+);
+
+CREATE TABLE MUAHANG.DonHang
+(
+	ID INT IDENTITY NOT NULL,
+	MaDonHang dbo.MACODE NOT NULL,
+	NgayLap DATETIME NOT NULL,
+	KhachHangID INT NOT NULL, -- FOREIGN KEY
+	NguoiNhan dbo.FREETYPE NOT NULL,
+	DiaChiNhan dbo.FREETYPE NOT NULL,
+	SdtNguoiNhan dbo.FREETYPE NOT NULL,
+	HinhThucThanhToan INT NOT NULL, -- FOREIGN KEY
+	PhiVanChuyen MONEY NOT NULL,
+	TinhTrangDonHang INT NOT NULL, -- FOREIGN
+	GhiChu dbo.FREETYPE,
+	CONSTRAINT PK_DonHang_ID PRIMARY KEY (ID),
+	CONSTRAINT UQ_DonHang_MaDonHang UNIQUE (MaDonHang),
+	CONSTRAINT FK_DonHang_KhachHangID FOREIGN KEY (KhachHangID) REFERENCES DANHMUC.KhachHang (ID),
+	CONSTRAINT FK_DonHang_HinhThucThanhToan FOREIGN KEY (HinhThucThanhToan) REFERENCES ENUM.HinhThucThanhToan (ID),
+	CONSTRAINT FK_DonHang_TinhTrangDonHang FOREIGN KEY (TinhTrangDonHang) REFERENCES ENUM.TinhTrangDonHang (ID)
+);
+
+CREATE TABLE MUAHANG.DonHangCT
+(
+	ID INT IDENTITY NOT NULL,
+	DonHangID INT NOT NULL,
+	SanPhamID INT NOT NULL, -- FOREIGN KEY
+	SoLuong INT NOT NULL,
+	DonGia MONEY NOT NULL,
+	CONSTRAINT PK_DonHangCT_ID PRIMARY KEY (ID),
+	CONSTRAINT UQ_DonHangCT_DonHangID_SanPhamID UNIQUE (DonHangID, SanPhamID),
+	CONSTRAINT FK_DonhangCT_DonHangID FOREIGN KEY (DonHangID) REFERENCES MUAHANG.DonHang (ID),
+	CONSTRAINT FK_DonHangCT_SanPhamID FOREIGN KEY (SanPhamID) REFERENCES DANHMUC.SanPham (ID)
+);

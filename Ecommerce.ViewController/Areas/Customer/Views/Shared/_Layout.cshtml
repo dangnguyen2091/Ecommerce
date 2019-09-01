@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Sách Online &mdash; Mở ra tri thức</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Rubik:400,700|Crimson+Text:400,400i" rel="stylesheet">
+    <link rel="stylesheet" href="/fonts/icomoon/style.css">
+    <link rel="stylesheet" href="/Content/bootstrap.min.css">
+    <link rel="stylesheet" href="/Content/magnific-popup.css">
+    <link rel="stylesheet" href="/Content/jquery-ui.css">
+    <link rel="stylesheet" href="/Content/owl.carousel.min.css">
+    <link rel="stylesheet" href="/Content/owl.theme.default.min.css">
+    <link rel="stylesheet" href="/Content/aos.css">
+    <link rel="stylesheet" href="/Content/style.css">
+    <script src="/Scripts/angular.js"></script>
+    <script>
+        var ngApp = angular.module('myNgApp', []);
+        ngApp.config(function ($provide) {
+            $provide.decorator('$exceptionHandler', function ($delegate) {
+                return function (exception, cause) {
+                    $delegate(exception, cause);
+                    console.clear();
+                    console.log(exception);
+                };
+            });
+        });
+    </script>
+    @RenderSection("scripts", required: false)
+</head>
+<body ng-app="myNgApp">
+    <div class="site-wrap">
+        @Html.Partial("_Navbar")
+        @RenderBody()
+        @Html.Partial("_Footer")
+    </div>
+    <script src="/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="/Scripts/jquery-ui.js"></script>
+    <script src="/Scripts/popper.min.js"></script>
+    <script src="/Scripts/bootstrap.min.js"></script>
+    <script src="/Scripts/owl.carousel.min.js"></script>
+    <script src="/Scripts/jquery.magnific-popup.min.js"></script>
+    <script src="/Scripts/aos.js"></script>
+    <script src="/Scripts/main.js"></script>
+</body>
+</html>

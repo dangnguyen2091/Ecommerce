@@ -1,0 +1,107 @@
+﻿@{
+    ViewBag.Title = "Sản phẩm";
+    Ecommerce.Common.Struct.CRUD crud = ViewBag.CRUD;
+}
+
+<h2>Sản phẩm</h2>
+<div ng-app="myNgApp" ng-controller="myController">
+    <table class="table">
+        <tr>
+            <th></th>
+            <th>ID</th>
+            <th>Mã</th>
+            <th>Tên</th>
+            <th>Nhóm</th>
+            <th>Đơn giá</th>
+            <th>
+                @Html.Partial("_CreateLink", crud)
+            </th>
+        </tr>
+        <tr ng-repeat="s in pager.Items">
+            <td><img src="{{s.HinhAnhUrl}}" width="50" height="50" /></td>
+            <td>{{s.SanPhamID}}</td>
+            <td>{{s.MaSanPham}}</td>
+            <td>{{s.TenSanPham}}</td>
+            <td>{{s.TenNhomSanPham}}</td>
+            <td>{{s.DonGia | number}}</td>
+            <td>
+                @Html.Partial("_UpdateLink", crud, new ViewDataDictionary() { { "id", "{{s.SanPhamID}}" } })
+                @Html.Partial("_DeleteLink", crud, new ViewDataDictionary() { { "id", "{{s.SanPhamID}}" } })
+                <a href="#" data-toggle="modal" data-target="#myModal"
+                   ng-click="viewThuocTinh(s.NhomSanPhamID, s.TenSanPham, s.ThuocTinh)">
+                    Thuộc tính
+                </a>
+            </td>
+        </tr>
+    </table>
+    <ul class="pagination">
+        <li ng-if="pager.CurrentPage > 1">
+            <a href="#" ng-click="display(1)">First</a>
+        </li>
+        <li ng-if="pager.CurrentPage > 1">
+            <a href="#" ng-click="display(pager.CurrentPage - 1)">Previous</a>
+        </li>
+        <li ng-repeat="i in pager.DisplayPages"
+            ng-class="{active: i == pager.CurrentPage}">
+            <a href="#" ng-click="display(i)">{{i}}</a>
+        </li>
+        <li ng-if="pager.CurrentPage < pager.TotalPages">
+            <a href="#" ng-click="display(pager.CurrentPage + 1)">Next</a>
+        </li>
+        <li ng-if="pager.CurrentPage < pager.TotalPages">
+            <a href="#" ng-click="display(pager.TotalPages)">Last</a>
+        </li>
+    </ul>
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{tenSanPham | uppercase}}</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <tr>
+                            <th>Thuộc tính</th>
+                            <th>Giá trị</th>
+                            <th>Đơn vị tính</th>
+                        </tr>
+                        <tr ng-repeat="s in listThuocTinh">
+                            <td>{{s.TenThuocTinh}}</td>
+                            <td>{{s.GiaTri}}</td>
+                            <td>{{s.DonViTinh}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        var ngApp = angular.module('myNgApp', []);
+        ngApp.controller('myController', function ($scope, $http, $window) {
+            $scope.display = function (pageIndex) {
+                $http.get("/Administrator/SanPham/Display?pageIndex=" + pageIndex).then(function (r) {
+                    $scope.pager = r.data;
+                });
+            }
+            $scope.display(1);
+
+            $scope.viewThuocTinh = function (id, ten, thuocTinh) {
+                $scope.tenSanPham = ten;
+                $http.get("/Administrator/SanPham/ViewThuocTinh?nspId=" + id).then(function (r) {
+                    $scope.listThuocTinh = r.data;
+                    var object = JSON.parse(thuocTinh);
+                    for (var i = 0; i < $scope.listThuocTinh.length; i++) {
+                        var val = object[$scope.listThuocTinh[i].MaThuocTinh];
+                        if (val != undefined)
+                            $scope.listThuocTinh[i].GiaTri = val;
+                    }
+                });
+            }
+        });
+    </script>
+}
