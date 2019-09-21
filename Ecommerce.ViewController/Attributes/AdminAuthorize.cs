@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Business.BUS;
+using Ecommerce.Business.IBus;
 using Ecommerce.Helpers;
 using Ecommerce.ViewModel;
 using System;
@@ -12,6 +13,9 @@ namespace Ecommerce.Attributes
 {
     public class AdminAuthorize : AuthorizeAttribute
     {
+        [Ninject.Inject]
+        public IPhanQuyenBusiness PhanQuyenBusiness { get; set; }
+
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
             var route = httpContext.Request.RequestContext.RouteData;
@@ -30,8 +34,7 @@ namespace Ecommerce.Attributes
             string action = route.GetRequiredString("action");
             string controller = route.GetRequiredString("controller");
             TaiKhoanViewModel taiKhoan = (TaiKhoanViewModel)httpContext.Session[SessionName.UserAdmin];
-            PhanQuyenBUS phanQuyenBUS = new PhanQuyenBUS();
-            if (!phanQuyenBUS.KiemTraPhanQuyen(taiKhoan.NhomNguoiDungID, controller, action))
+            if (!PhanQuyenBusiness.KiemTraPhanQuyen(taiKhoan.NhomNguoiDungID, controller, action))
             {
                 httpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
                 return false;

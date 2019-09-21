@@ -2,7 +2,7 @@
 
 namespace Ecommerce.ViewModel
 {
-    public class DangNhapViewModel
+    public class DangNhapViewModel : BaseViewModel
     {
         public string TenDangNhap { get; set; }
         public string MatKhau { get; set; }

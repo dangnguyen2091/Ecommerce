@@ -43,12 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseViewModel.cs" />
     <Compile Include="DangNhapViewModel.cs" />
     <Compile Include="DonHangViewModel.cs" />
     <Compile Include="GioHangItemViewModel.cs" />
     <Compile Include="HinhThucThanhToanViewModel.cs" />
     <Compile Include="NhomSanPhamDisplayViewModel.cs" />
     <Compile Include="NhomSanPhamViewModel.cs" />
+    <Compile Include="PhanQuyenViewModel.cs" />
     <Compile Include="SanPhamDisplayViewModel.cs" />
     <Compile Include="SanPhamViewModel.cs" />
     <Compile Include="ThuocTinhViewModel.cs" />

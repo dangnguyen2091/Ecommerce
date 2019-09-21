@@ -1,20 +1,29 @@
-﻿using Ecommerce.Business.BUS;
+﻿using Ecommerce.Business.IBus;
 using Ecommerce.Common.Struct;
 using Ecommerce.Common.Utilities;
 using Ecommerce.Enums;
 using Ecommerce.Helpers;
 using Ecommerce.ViewModel;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Ecommerce.Areas.Customer.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly INhomSanPhamBusiness nhomSanPhamBusiness;
+        private readonly ISanPhamBusiness sanPhamBusiness;
+        private readonly IDonHangBusiness donHangBusiness;
+
+        public HomeController(INhomSanPhamBusiness nhomSanPhamBusiness, 
+            ISanPhamBusiness sanPhamBusiness, IDonHangBusiness donHangBusiness)
+        {
+            this.nhomSanPhamBusiness = nhomSanPhamBusiness;
+            this.sanPhamBusiness = sanPhamBusiness;
+            this.donHangBusiness = donHangBusiness;
+        }
+
         //protected override void OnException(ExceptionContext filterContext)
         //{
         //    filterContext.ExceptionHandled = true;
@@ -34,11 +43,10 @@ namespace Ecommerce.Areas.Customer.Controllers
 
         public ActionResult Product(int nspId = 0)
         {
-            NhomSanPhamBUS bus = new NhomSanPhamBUS();
             List<NhomSanPhamDisplayViewModel> viewModels = new List<NhomSanPhamDisplayViewModel>();
             if (nspId > 0)
             {
-                bus.GetNhomSanPhamTree(nspId, ref viewModels);
+                nhomSanPhamBusiness.GetNhomSanPhamTree(nspId, ref viewModels);
             }
 
             ViewBag.NhomSPHierarchy =  viewModels;
@@ -47,8 +55,7 @@ namespace Ecommerce.Areas.Customer.Controllers
 
         public ActionResult Detail(int id)
         {
-            SanPhamBUS bus = new SanPhamBUS();
-            SanPhamDisplayViewModel viewModel = bus.GetSanPham(id);
+            SanPhamDisplayViewModel viewModel = sanPhamBusiness.DisplaySanPham(id);
             return View(viewModel);
         }
 
@@ -64,8 +71,7 @@ namespace Ecommerce.Areas.Customer.Controllers
             if (gioHang.Count == 0)
                 return Content("Access denied!");
 
-            DonHangBUS bus = new DonHangBUS();
-            DonHangViewModel viewModel = bus.InitDatHang();
+            DonHangViewModel viewModel = donHangBusiness.InitInsert();
             viewModel.GioHangItems = gioHang;
             return View(viewModel);
         }
@@ -82,32 +88,28 @@ namespace Ecommerce.Areas.Customer.Controllers
         [HttpGet]
         public JsonResult GetNhomSanPham()
         {
-            NhomSanPhamBUS bus = new NhomSanPhamBUS();
-            List<NhomSanPhamDisplayViewModel> viewModels = bus.DisplayAll();
+            List<NhomSanPhamDisplayViewModel> viewModels = nhomSanPhamBusiness.DisplayAll();
             return Json(viewModels, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public JsonResult GetSanPhamBanChay()
         {
-            SanPhamBUS bus = new SanPhamBUS();
-            List<SanPhamDisplayViewModel> viewModels = bus.GetSanPhamBanChay();
+            List<SanPhamDisplayViewModel> viewModels = sanPhamBusiness.DisplaySanPhamBanChay();
             return Json(viewModels, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public JsonResult GetSanPhamMoi()
         {
-            SanPhamBUS bus = new SanPhamBUS();
-            List<SanPhamDisplayViewModel> viewModels = bus.GetSanPhamMoi();
+            List<SanPhamDisplayViewModel> viewModels = sanPhamBusiness.DisplaySanPhamMoi();
             return Json(viewModels, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public JsonResult GetSanPhamByNhomSanPham(int nspId, int pageIndex, OrderBy order)
         {
-            SanPhamBUS bus = new SanPhamBUS();
-            List<SanPhamDisplayViewModel> viewModels = bus.GetByNhomSanPham(nspId);
+            List<SanPhamDisplayViewModel> viewModels = sanPhamBusiness.DisplaySanPhamByNhomSanPham(nspId);
             switch (order)
             {
                 case OrderBy.NameAsc:
@@ -130,8 +132,7 @@ namespace Ecommerce.Areas.Customer.Controllers
         [HttpGet]
         public JsonResult SearchSanPham(string search, int pageIndex, OrderBy order)
         {
-            SanPhamBUS bus = new SanPhamBUS();
-            List<SanPhamDisplayViewModel> viewModels = bus.SearchSanPham(search);
+            List<SanPhamDisplayViewModel> viewModels = sanPhamBusiness.SearchSanPham(search);
             switch (order)
             {
                 case OrderBy.NameAsc:
@@ -186,8 +187,7 @@ namespace Ecommerce.Areas.Customer.Controllers
         [HttpPost]
         public JsonResult DatHang(DonHangViewModel viewModel)
         {
-            DonHangBUS bus = new DonHangBUS();
-            ResultHandle result = bus.Insert(viewModel);
+            ResultHandle result = donHangBusiness.Insert(viewModel);
             if (!result.HasError)
             {
                 //clear giỏ hàng trong cookie

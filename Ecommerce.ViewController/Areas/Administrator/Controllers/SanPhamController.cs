@@ -1,48 +1,47 @@
-﻿using Ecommerce.Attributes;
-using Ecommerce.Base;
-using Ecommerce.Business.BUS;
+﻿using Ecommerce.Base;
+using Ecommerce.Business.IBus;
 using Ecommerce.Common.Struct;
 using Ecommerce.Common.Utilities;
 using Ecommerce.ViewModel;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Ecommerce.Areas.Administrator.Controllers
 {
     public class SanPhamController : AdminController
     {
+        private readonly ISanPhamBusiness sanPhamBusiness;
+
+        public SanPhamController(IPhanQuyenBusiness phanQuyenBusiness, ISanPhamBusiness sanPhamBusiness) : base(phanQuyenBusiness)
+        {
+            this.sanPhamBusiness = sanPhamBusiness;
+        }
+
         public ActionResult Create()
         {
             //@Html.Raw(System.Web.HttpUtility.HtmlDecode(ViewBag.MoTa))
-            SanPhamBUS bus = new SanPhamBUS();
-            SanPhamViewModel viewModel = bus.InitCreate();
+            SanPhamViewModel viewModel = sanPhamBusiness.InitInsert();
             return View(viewModel);
         }
 
         public ActionResult Update(int id)
         {
             //@Html.Raw(System.Web.HttpUtility.HtmlDecode(ViewBag.MoTa))
-            SanPhamBUS bus = new SanPhamBUS();
-            SanPhamViewModel viewModel = bus.InitUpdate(id);
+            SanPhamViewModel viewModel = sanPhamBusiness.InitUpdate(id);
             return View(viewModel);
         }
 
         public ActionResult Delete(int id)
         {
-            SanPhamBUS bus = new SanPhamBUS();
-            SanPhamViewModel viewModel = bus.InitDelete(id);
+            SanPhamViewModel viewModel = sanPhamBusiness.InitDelete(id);
             return View(viewModel);
         }
 
         [HttpGet]
         public JsonResult Display(int pageIndex)
         {
-            SanPhamBUS bus = new SanPhamBUS();
-            List<SanPhamDisplayViewModel> viewModels = bus.DisplayAll();
+            List<SanPhamDisplayViewModel> viewModels = sanPhamBusiness.DisplayAll();
             viewModels.ForEach(x => { x.ThuocTinh = x.ThuocTinh.Replace(@"\", ""); });
             PageHelper page = new PageHelper(viewModels, pageIndex);
             return Json(page, JsonRequestBehavior.AllowGet);
@@ -53,8 +52,7 @@ namespace Ecommerce.Areas.Administrator.Controllers
         {
             viewModel.NhomSanPhamID = int.Parse(Request.Form["NhomSanPhamID"].Substring(Request.Form["NhomSanPhamID"].IndexOf(',') + 1));
             viewModel.ThuocTinhs = JsonConvert.DeserializeObject<List<ThuocTinhViewModel>>(Request.Form["ThuocTinhs"]);
-            SanPhamBUS bus = new SanPhamBUS();            
-            ResultHandle result = bus.Insert(viewModel);
+            ResultHandle result = sanPhamBusiness.Insert(viewModel);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
@@ -65,24 +63,21 @@ namespace Ecommerce.Areas.Administrator.Controllers
             viewModel.NhomSanPhamID = int.Parse(Request.Form["NhomSanPhamID"].Substring(Request.Form["NhomSanPhamID"].IndexOf(',') + 1));
             viewModel.ThuocTinhs = JsonConvert.DeserializeObject<List<ThuocTinhViewModel>>(Request.Form["ThuocTinhs"]);
             viewModel.HinhAnh = Request.Form["HinhAnh"];
-            SanPhamBUS bus = new SanPhamBUS();
-            ResultHandle result = bus.Update(viewModel);
+            ResultHandle result = sanPhamBusiness.Update(viewModel);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult Delete(SanPhamViewModel viewModel)
         {
-            SanPhamBUS bus = new SanPhamBUS();
-            ResultHandle result = bus.Delete(viewModel.SanPhamID);
+            ResultHandle result = sanPhamBusiness.Delete(viewModel.SanPhamID);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public JsonResult ViewThuocTinh(int nspId)
         {
-            SanPhamBUS bus = new SanPhamBUS();
-            List<ThuocTinhViewModel> list = bus.GetThuocTinh(nspId);
+            List<ThuocTinhViewModel> list = sanPhamBusiness.GetThuocTinh(nspId);
             return Json(list, JsonRequestBehavior.AllowGet);
         }
     }

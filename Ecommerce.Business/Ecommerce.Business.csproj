@@ -31,10 +31,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
@@ -45,16 +52,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BUS\DonHangBUS.cs" />
-    <Compile Include="BUS\HinhThucThanhToanBUS.cs" />
-    <Compile Include="BUS\NhomSanPhamBUS.cs" />
-    <Compile Include="BUS\PhanQuyenBUS.cs" />
-    <Compile Include="BUS\SanPhamBUS.cs" />
-    <Compile Include="BUS\TaiKhoanBUS.cs" />
-    <Compile Include="BUS\ThuocTinhBUS.cs" />
+    <Compile Include="Bus\Business.cs" />
+    <Compile Include="Bus\DonHangBusiness.cs" />
+    <Compile Include="Bus\HinhThucThanhToanBusiness.cs" />
+    <Compile Include="Bus\NhomSanPhamBusiness.cs" />
+    <Compile Include="Bus\PhanQuyenBusiness.cs" />
+    <Compile Include="Bus\SanPhamBusiness.cs" />
+    <Compile Include="Bus\TaiKhoanBusiness.cs" />
+    <Compile Include="IBus\IBusiness.cs" />
+    <Compile Include="IBus\IDonHangBusiness.cs" />
+    <Compile Include="IBus\IHinhThucThanhToanBusiness.cs" />
+    <Compile Include="IBus\INhomSanPhamBusiness.cs" />
+    <Compile Include="IBus\IPhanQuyenBusiness.cs" />
+    <Compile Include="IBus\ISanPhamBusiness.cs" />
+    <Compile Include="IBus\ITaiKhoanBusiness.cs" />
+    <Compile Include="IUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

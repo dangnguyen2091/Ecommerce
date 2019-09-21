@@ -1,45 +1,44 @@
-﻿using Ecommerce.Attributes;
-using Ecommerce.Base;
-using Ecommerce.Business.BUS;
+﻿using Ecommerce.Base;
+using Ecommerce.Business.IBus;
 using Ecommerce.Common.Struct;
 using Ecommerce.Common.Utilities;
 using Ecommerce.ViewModel;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Ecommerce.Areas.Administrator.Controllers
 {
     public class NhomSanPhamController : AdminController
     {
+        private readonly INhomSanPhamBusiness nhomSanPhamBusiness;        
+
+        public NhomSanPhamController(IPhanQuyenBusiness phanQuyenBusiness, INhomSanPhamBusiness nhomSanPhamBusiness) : base(phanQuyenBusiness)
+        {
+            this.nhomSanPhamBusiness = nhomSanPhamBusiness;
+        }
+
         public ActionResult Create()
         {
-            NhomSanPhamBUS bus = new NhomSanPhamBUS();
-            NhomSanPhamViewModel viewModel = bus.InitCreate();
+            NhomSanPhamViewModel viewModel = nhomSanPhamBusiness.InitInsert();
             return View(viewModel);
         }
 
         public ActionResult Update(int id)
         {
-            NhomSanPhamBUS bus = new NhomSanPhamBUS();
-            NhomSanPhamViewModel viewModel = bus.InitUpdate(id);
+            NhomSanPhamViewModel viewModel = nhomSanPhamBusiness.InitUpdate(id);
             return View(viewModel);
         }
 
         public ActionResult Delete(int id)
         {
-            NhomSanPhamBUS bus = new NhomSanPhamBUS();
-            NhomSanPhamViewModel viewModel = bus.InitDelete(id);
+            NhomSanPhamViewModel viewModel = nhomSanPhamBusiness.InitDelete(id);
             return View(viewModel);
         }
 
         [HttpGet]
         public JsonResult Display(int pageIndex)
         {
-            NhomSanPhamBUS bus = new NhomSanPhamBUS();
-            List<NhomSanPhamDisplayViewModel> viewModels = bus.DisplayAll();
+            List<NhomSanPhamDisplayViewModel> viewModels = nhomSanPhamBusiness.DisplayAll();
             PageHelper page = new PageHelper(viewModels, pageIndex);
             return Json(page, JsonRequestBehavior.AllowGet);
         }
@@ -47,32 +46,28 @@ namespace Ecommerce.Areas.Administrator.Controllers
         [HttpPost]
         public JsonResult Create(NhomSanPhamViewModel viewModel)
         {
-            NhomSanPhamBUS bus = new NhomSanPhamBUS();
-            ResultHandle result = bus.Insert(viewModel);
+            ResultHandle result = nhomSanPhamBusiness.Insert(viewModel);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult Update(NhomSanPhamViewModel viewModel)
         {
-            NhomSanPhamBUS bus = new NhomSanPhamBUS();
-            ResultHandle result = bus.Update(viewModel);
+            ResultHandle result = nhomSanPhamBusiness.Update(viewModel);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult Delete(NhomSanPhamViewModel viewModel)
         {
-            NhomSanPhamBUS bus = new NhomSanPhamBUS();
-            ResultHandle result = bus.Delete(viewModel.NhomSanPhamID);
+            ResultHandle result = nhomSanPhamBusiness.Delete(viewModel.NhomSanPhamID);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public JsonResult ViewThuocTinh(int id)
         {
-            NhomSanPhamBUS bus = new NhomSanPhamBUS();
-            List<ThuocTinhViewModel> list = bus.GetThuocTinhByNhomSanPhamID(id);
+            List<ThuocTinhViewModel> list = nhomSanPhamBusiness.GetThuocTinhByNhomSanPhamID(id);
             return Json(list, JsonRequestBehavior.AllowGet);
         }
     }

@@ -107,14 +107,23 @@
     <Compile Include="Context\TinhTrangDonHang.cs">
       <DependentUpon>EcommerceDataModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="DAO\DonHangDAO.cs" />
-    <Compile Include="DAO\HinhThucThanhToanDAO.cs" />
-    <Compile Include="DAO\NhomSanPhamDAO.cs" />
-    <Compile Include="DAO\PhanQuyenDAO.cs" />
-    <Compile Include="DAO\SanPhamDAO.cs" />
-    <Compile Include="DAO\TaiKhoanDAO.cs" />
-    <Compile Include="DAO\ThuocTinhDAO.cs" />
+    <Compile Include="IRepositories\IDonHangRepository.cs" />
+    <Compile Include="IRepositories\IHinhThucThanhToanRepository.cs" />
+    <Compile Include="IRepositories\INhomSanPhamRepository.cs" />
+    <Compile Include="IRepositories\IPhanQuyenRepository.cs" />
+    <Compile Include="IRepositories\IRepository.cs" />
+    <Compile Include="IRepositories\ISanPhamRepository.cs" />
+    <Compile Include="IRepositories\ITaiKhoanRepository.cs" />
+    <Compile Include="IRepositories\IThuocTinhRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\DonHangRepository.cs" />
+    <Compile Include="Repositories\HinhThucThanhToanRepository.cs" />
+    <Compile Include="Repositories\NhomSanPhamRepository.cs" />
+    <Compile Include="Repositories\PhanQuyenRepository.cs" />
+    <Compile Include="Repositories\Repository.cs" />
+    <Compile Include="Repositories\SanPhamRepository.cs" />
+    <Compile Include="Repositories\TaiKhoanRepository.cs" />
+    <Compile Include="Repositories\ThuocTinhRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Ecommerce.Common\Ecommerce.Common.csproj">

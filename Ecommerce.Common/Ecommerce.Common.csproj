@@ -49,6 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\EntityCastAttribute.cs" />
+    <Compile Include="Attributes\PropertyCastAttribute.cs" />
     <Compile Include="Struct\CommonCode.cs" />
     <Compile Include="Struct\CRUD.cs" />
     <Compile Include="Struct\ResultHandle.cs" />
@@ -56,6 +58,7 @@
     <Compile Include="Utilities\DbContextHelper.cs" />
     <Compile Include="Utilities\ImageHelper.cs" />
     <Compile Include="Utilities\ListHelper.cs" />
+    <Compile Include="Utilities\ObjectHelper.cs" />
     <Compile Include="Utilities\PageHelper.cs" />
   </ItemGroup>
   <ItemGroup>

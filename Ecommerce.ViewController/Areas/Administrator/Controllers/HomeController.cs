@@ -1,5 +1,5 @@
 ﻿using Ecommerce.Attributes;
-using Ecommerce.Business.BUS;
+using Ecommerce.Business.IBus;
 using Ecommerce.Common.Struct;
 using Ecommerce.Helpers;
 using Ecommerce.ViewModel;
@@ -9,6 +9,13 @@ namespace Ecommerce.Areas.Administrator.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ITaiKhoanBusiness taiKhoanBusiness;
+
+        public HomeController(ITaiKhoanBusiness taiKhoanBusiness)
+        {
+            this.taiKhoanBusiness = taiKhoanBusiness;
+        }
+
         [AdminAuthorize]
         public ActionResult Index()
         {
@@ -42,8 +49,7 @@ namespace Ecommerce.Areas.Administrator.Controllers
         [HttpPost]
         public ActionResult Login(DangNhapViewModel viewModel)
         {
-            TaiKhoanBUS bus = new TaiKhoanBUS();
-            ResultHandle result = bus.KiemTraDangNhap(viewModel);
+            ResultHandle result = taiKhoanBusiness.KiemTraDangNhap(viewModel);
             if (!result.HasError)
             {
                 LoginHelper.DangNhapAdmin(Session, (TaiKhoanViewModel)result.Outputs["TaiKhoanDangNhap"]);          
